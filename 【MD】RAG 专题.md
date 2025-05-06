@@ -1,0 +1,939 @@
+# <font style="color:#000000;">RAG 简介</font>
+## <font style="color:#000000;">什么是检索增强生成？</font>
+<font style="color:#000000;">检索增强生成（RAG）是指对大型语言模型输出进行优化，使其能够在生成响应之前引用训练数据来源之外的权威知识库。大型语言模型（LLM）用海量数据进行训练，使用数十亿个参数为回答问题、翻译语言和完成句子等任务生成原始输出。在 LLM 本就强大的功能基础上，RAG 将其扩展为能访问特定领域或组织的内部知识库，所有这些都无需重新训练模型。这是一种经济高效地改进 LLM 输出的方法，让它在各种情境下都能保持相关性、准确性和实用性。</font>
+
+## <font style="color:#000000;background-color:rgb(251, 251, 251);">为什么检索增强生成很重要？</font>
+<font style="color:#000000;background-color:rgb(251, 251, 251);">LLM 是一项关键的人工智能（AI）技术，为智能聊天机器人和其他自然语言处理（NLP）应用程序提供支持。目标是通过交叉引用权威知识来源，创建能够在各种环境中回答用户问题的机器人。不幸的是，LLM 技术的本质在 LLM 响应中引入了不可预测性。此外，LLM 训练数据是静态的，并引入了其所掌握知识的截止日期。</font>
+
+<font style="color:#000000;background-color:rgb(251, 251, 251);">LLM 面临的已知挑战包括：</font>
+
++ <font style="color:#000000;background-color:rgb(251, 251, 251);">在没有答案的情况下提供虚假信息。</font>
++ <font style="color:#000000;background-color:rgb(251, 251, 251);">当用户需要特定的当前响应时，提供过时或通用的信息。</font>
++ <font style="color:#000000;background-color:rgb(251, 251, 251);">从非权威来源创建响应。</font>
++ <font style="color:#000000;background-color:rgb(251, 251, 251);">由于术语混淆，不同的培训来源使用相同的术语来谈论不同的事情，因此会产生不准确的响应。</font>
+
+<font style="color:#000000;background-color:rgb(251, 251, 251);">您可以将</font>[<font style="color:#000000;background-color:rgb(251, 251, 251);">大型语言模型</font>](https://aws.amazon.com/what-is/large-language-model/)<font style="color:#000000;background-color:rgb(251, 251, 251);">看作是一个过于热情的新员工，他拒绝随时了解时事，但总是会绝对自信地回答每一个问题。不幸的是，这种态度会对用户的信任产生负面影响，这是您不希望聊天机器人效仿的！</font>
+
+<font style="color:#000000;background-color:rgb(251, 251, 251);">RAG 是解决其中一些挑战的一种方法。它会重定向 LLM，从权威的、预先确定的知识来源中检索相关信息。组织可以更好地控制生成的文本输出，并且用户可以深入了解 LLM 如何生成响应。</font>
+
+## <font style="color:#000000;">检索增强生成有哪些好处？</font>
+<font style="color:#000000;">RAG 技术为组织的</font>[<font style="color:#000000;">生成式人工智能</font>](https://aws.amazon.com/what-is/generative-ai/)<font style="color:#000000;">工作带来了多项好处。</font>
+
+### **<font style="color:#000000;">经济高效的实施</font>**
+<font style="color:#000000;">聊天机器人开发通常从</font>[<font style="color:#000000;">基础模型</font>](https://aws.amazon.com/what-is/foundation-models/)<font style="color:#000000;">开始。基础模型（FM）是在广泛的广义和未标记数据上训练的 API 可访问 LLM。针对组织或领域特定信息重新训练 FM 的计算和财务成本很高。RAG 是一种将新数据引入 LLM 的更加经济高效的方法。它使生成式人工智能技术更广泛地获得和使用。</font>
+
+### **<font style="color:#000000;">当前信息</font>**
+<font style="color:#000000;">即使 LLM 的原始训练数据来源适合您的需求，但保持相关性也具有挑战性。RAG 允许开发人员为生成模型提供最新的研究、统计数据或新闻。他们可以使用 RAG 将 LLM 直接连接到实时社交媒体提要、新闻网站或其他经常更新的信息来源。然后，LLM 可以向用户提供最新信息。</font>
+
+### **<font style="color:#000000;">增强用户信任度</font>**
+<font style="color:#000000;">RAG 允许 LLM 通过来源归属来呈现准确的信息。输出可以包括对来源的引文或引用。如果需要进一步说明或更详细的信息，用户也可以自己查找源文档。这可以增加对您的生成式人工智能解决方案的信任和信心。</font>
+
+### **<font style="color:#000000;">更多开发人员控制权</font>**
+<font style="color:#000000;">借助 RAG，开发人员可以更高效地测试和改进他们的聊天应用程序。他们可以控制和更改 LLM 的信息来源，以适应不断变化的需求或跨职能使用。开发人员还可以将敏感信息的检索限制在不同的授权级别内，并确保 LLM 生成适当的响应。此外，如果 LLM 针对特定问题引用了错误的信息来源，他们还可以进行故障排除并进行修复。组织可以更自信地为更广泛的应用程序实施生成式人工智能技术。</font>
+
+## <font style="color:#000000;background-color:rgb(251, 251, 251);">检索增强生成的工作原理是什么？</font>
+<font style="color:#000000;background-color:rgb(251, 251, 251);">如果没有 RAG，LLM 会接受用户输入，并根据它所接受训练的信息或它已经知道的信息创建响应。RAG 引入了一个信息检索组件，该组件利用用户输入首先从新数据源提取信息。用户查询和相关信息都提供给 LLM。LLM 使用新知识及其训练数据来创建更好的响应。以下各部分概述了该过程。</font>
+
+### **<font style="color:#000000;background-color:rgb(251, 251, 251);">创建外部数据</font>**
+<font style="color:#000000;background-color:rgb(251, 251, 251);">LLM 原始训练数据集之外的新数据称为</font>_<font style="color:#000000;background-color:rgb(251, 251, 251);">外部数据</font>_<font style="color:#000000;background-color:rgb(251, 251, 251);">。它可以来自多个数据来源，例如 API、数据库或文档存储库。数据可能以各种格式存在，例如文件、数据库记录或长篇文本。另一种称为</font>_<font style="color:#000000;background-color:rgb(251, 251, 251);">嵌入语言模型</font>_<font style="color:#000000;background-color:rgb(251, 251, 251);">的 AI 技术将数据转换为数字表示形式并将其存储在向量数据库中。这个过程会创建一个生成式人工智能模型可以理解的知识库。</font>
+
+### **<font style="color:#000000;background-color:rgb(251, 251, 251);">检索相关信息</font>**
+<font style="color:#000000;background-color:rgb(251, 251, 251);">下一步是执行相关性搜索。用户查询将转换为向量表示形式，并与向量数据库匹配。例如，考虑一个可以回答组织的人力资源问题的智能聊天机器人。如果员工搜索</font>_<font style="color:#000000;background-color:rgb(251, 251, 251);">：“我有多少年假？”</font>_<font style="color:#000000;background-color:rgb(251, 251, 251);">，系统将检索年假政策文件以及员工个人过去的休假记录。这些特定文件将被退回，因为它们与员工输入的内容高度相关。相关性是使用数学向量计算和表示法计算和建立的。</font>
+
+### **<font style="color:#000000;background-color:rgb(251, 251, 251);">增强 LLM 提示</font>**
+<font style="color:#000000;background-color:rgb(251, 251, 251);">接下来，RAG 模型通过在上下文中添加检索到的相关数据来增强用户输入（或提示）。此步骤使用提示工程技术与 LLM 进行有效沟通。增强提示允许大型语言模型为用户查询生成准确的答案。</font>
+
+### **<font style="color:#000000;background-color:rgb(251, 251, 251);">更新外部数据</font>**
+<font style="color:#000000;background-color:rgb(251, 251, 251);">下一个问题可能是：如果外部数据过时了怎么办？ 要维护当前信息以供检索，请异步更新文档并更新文档的嵌入表示形式。您可以通过自动化实时流程或定期批处理来执行此操作。这是数据分析中常见的挑战：可以使用不同的数据科学方法进行变更管理。</font>
+
+<font style="color:#000000;background-color:rgb(251, 251, 251);">下图显示了将 RAG 与 LLM 配合使用的概念流程。</font>
+
+![](https://cdn.nlark.com/yuque/0/2024/jpeg/2424104/1723025768953-e3e2f778-1a55-4811-ae83-971f7cb851b5.jpeg)<font style="color:#000000;background-color:rgb(251, 251, 251);">  
+</font>
+
+## <font style="color:#000000;">检索增强生成和语义搜索有什么区别？</font>
+<font style="color:#000000;">语义搜索可以提高 RAG 结果，适用于想要在其 LLM 应用程序中添加大量外部知识源的组织。现代企业在各种系统中存储大量信息，例如手册、常见问题、研究报告、客户服务指南和人力资源文档存储库等。上下文检索在规模上具有挑战性，因此会降低生成输出质量。</font>
+
+<font style="color:#000000;">语义搜索技术可以扫描包含不同信息的大型数据库，并更准确地检索数据。例如，他们可以回答诸如</font><font style="color:#000000;"> </font>_<font style="color:#000000;">“去年在机械维修上花了多少钱？”</font>_<font style="color:#000000;">之类的问题，方法是将问题映射到相关文档并返回特定文本而不是搜索结果。然后，开发人员可以使用该答案为 LLM 提供更多上下文。</font>
+
+<font style="color:#000000;">RAG 中的传统或关键字搜索解决方案对知识密集型任务产生的结果有限。开发人员在手动准备数据时还必须处理单词嵌入、文档分块和其他复杂问题。相比之下，语义搜索技术可以完成知识库准备的所有工作，因此开发人员不必这样做。它们还生成语义相关的段落和按相关性排序的标记词，以最大限度地提高 RAG 有效载荷的质量。</font>
+
+# <font style="color:#000000;">Document loaders和Text splitters</font>
+## <font style="color:#000000;">Document loaders(文档加载器)</font>
+<font style="color:#000000;">Document loaders(文档加载器) </font><font style="color:rgb(28, 30, 33);">这些类加载文档对象。LangChain与各种数据源有数百个集成，可以从中加载数据：Slack、Notion、Google Drive等。 每个文档加载器都有自己特定的参数，但它们可以通过相同的方式使用</font>`<font style="color:rgb(28, 30, 33);">.load</font>`<font style="color:rgb(28, 30, 33);">方法调用。 以下是一个示例用法：</font>
+
+```python
+from langchain_community.document_loaders.csv_loader import CSVLoader
+loader = CSVLoader(
+    ...  # <-- 在这里添加特定于集成的参数
+)
+data = loader.load()
+```
+
+### 如何加载 CSV 文件
+[<font style="color:rgb(28, 30, 33);">逗号分隔值（CSV）</font>](https://zh.wikipedia.org/wiki/%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%E5%80%BC)<font style="color:rgb(28, 30, 33);">文件是一种使用逗号分隔值的定界文本文件。文件的每一行是一个数据记录。每个记录由一个或多个字段组成，字段之间用逗号分隔。</font>
+
+<font style="color:rgb(28, 30, 33);">LangChain 实现了一个</font><font style="color:rgb(28, 30, 33);"> </font>[<font style="color:rgb(28, 30, 33);">CSV 加载器</font>](https://api.python.langchain.com/en/latest/document_loaders/langchain_community.document_loaders.csv_loader.CSVLoader.html)<font style="color:rgb(28, 30, 33);">，可以将 CSV 文件加载为一系列</font><font style="color:rgb(28, 30, 33);"> </font>[<font style="color:rgb(28, 30, 33);">Document</font>](https://api.python.langchain.com/en/latest/documents/langchain_core.documents.base.Document.html#langchain_core.documents.base.Document)<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">对象。CSV 文件的每一行都会被翻译为一个文档。</font>
+
+```python
+#示例：csv_loader.py
+from langchain_community.document_loaders.csv_loader import CSVLoader
+
+file_path = (
+    "../../resource/doc_search.csv"
+)
+loader = CSVLoader(file_path=file_path,encoding="UTF-8")
+data = loader.load()
+for record in data[:2]:
+    print(record)
+```
+
+```python
+page_content='名称: 狮子
+种类: 哺乳动物
+年龄: 8
+栖息地: 非洲草原' metadata={'source': '../../resource/doc_search.csv', 'row': 0}
+page_content='名称: 大熊猫
+种类: 哺乳动物
+年龄: 5
+栖息地: 中国竹林' metadata={'source': '../../resource/doc_search.csv', 'row': 1}
+```
+
+#### 自定义 CSV 解析和加载
+`<font style="color:rgb(28, 30, 33);">CSVLoader</font>`<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">接受一个</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">csv_args</font>`<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">关键字参数，用于自定义传递给 Python 的</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">csv.DictReader</font>`<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">的参数。有关支持的 csv 参数的更多信息，请参阅</font><font style="color:rgb(28, 30, 33);"> </font>[<font style="color:rgb(28, 30, 33);">csv 模块</font>](https://docs.python.org/zh-cn/3/library/csv.html)<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">文档。</font>
+
+```python
+#示例：csv_custom.py
+from langchain_community.document_loaders.csv_loader import CSVLoader
+
+file_path = (
+    "../../resource/doc_search.csv"
+)
+loader = CSVLoader(
+    file_path=file_path,
+    encoding="UTF-8",
+    csv_args={
+        "delimiter": ",",
+        "quotechar": '"',
+        "fieldnames": ["Name", "Species", "Age", "Habitat"],
+    },
+)
+data = loader.load()
+for record in data[:2]:
+    print(record)
+```
+
+```plain
+page_content='Name: 名称
+Species: 种类
+Age: 年龄
+Habitat: 栖息地' metadata={'source': '../../resource/doc_search.csv', 'row': 0}
+page_content='Name: 狮子
+Species: 哺乳动物
+Age: 8
+Habitat: 非洲草原' metadata={'source': '../../resource/doc_search.csv', 'row': 1}
+```
+
+
+
+### 如何加载 HTML
+<font style="color:rgb(28, 30, 33);">超文本标记语言（HTML）是用于在Web浏览器中显示的文档的标准标记语言。</font>
+
+<font style="color:rgb(28, 30, 33);">这里介绍了如何将HTML文档加载到LangChain的</font>[<font style="color:rgb(28, 30, 33);">Document</font>](https://api.python.langchain.com/en/latest/documents/langchain_core.documents.base.Document.html#langchain_core.documents.base.Document)<font style="color:rgb(28, 30, 33);">对象中，以便我们可以在下游使用。</font>
+
+<font style="color:rgb(28, 30, 33);">解析HTML文件通常需要专门的工具。在这里，我们演示了如何通过</font>[<font style="color:rgb(28, 30, 33);">Unstructured</font>](https://unstructured-io.github.io/unstructured/)<font style="color:rgb(28, 30, 33);">和</font>[<font style="color:rgb(28, 30, 33);">BeautifulSoup4</font>](https://beautiful-soup-4.readthedocs.io/en/latest/)<font style="color:rgb(28, 30, 33);">进行解析，可以通过pip安装。请前往集成页面查找与其他服务的集成，例如</font>[<font style="color:rgb(28, 30, 33);">Azure AI Document Intelligence</font>](http://www.aidoczh.com/langchain/v0.2/docs/integrations/document_loaders/azure_document_intelligence/)<font style="color:rgb(28, 30, 33);">或</font>[<font style="color:rgb(28, 30, 33);">FireCrawl</font>](http://www.aidoczh.com/langchain/v0.2/docs/integrations/document_loaders/firecrawl/)<font style="color:rgb(28, 30, 33);">。</font>
+
+#### 使用Unstructured加载HTML
+```python
+%pip install "unstructured[html]"
+```
+
+```python
+#示例：html_loader.py
+from langchain_community.document_loaders import UnstructuredHTMLLoader
+
+file_path = "../../resource/content.html"
+loader = UnstructuredHTMLLoader(file_path, encodings="UTF-8")
+data = loader.load()
+print(data)
+```
+
+```plain
+[Document(metadata={'source': '../../resource/content.html'}, page_content='风景展示\n\n黄山\n\n黄山位于中国安徽省南部，是中国著名的风景名胜区，以奇松、怪石、云海和温泉“四绝”闻名。\n\n大峡谷\n\n大峡谷位于美国亚利桑那州，是世界上最著名的自然景观之一，以其壮观的地质奇观和深邃的峡谷闻名。')]
+```
+
+#### 使用BeautifulSoup4加载HTML
+<font style="color:rgb(28, 30, 33);">我们还可以使用BeautifulSoup4使用</font>`<font style="color:rgb(28, 30, 33);">BSHTMLLoader</font>`<font style="color:rgb(28, 30, 33);">加载HTML文档。这将将HTML中的文本提取到</font>`<font style="color:rgb(28, 30, 33);">page_content</font>`<font style="color:rgb(28, 30, 33);">中，并将页面标题提取到</font>`<font style="color:rgb(28, 30, 33);">metadata</font>`<font style="color:rgb(28, 30, 33);">的</font>`<font style="color:rgb(28, 30, 33);">title</font>`<font style="color:rgb(28, 30, 33);">中。</font>
+
+```python
+#pip install bs4
+```
+
+```python
+#示例：html_bs4.py
+from langchain_community.document_loaders import BSHTMLLoader
+
+file_path = "../../resource/content.html"
+loader = BSHTMLLoader(file_path, open_encoding="UTF-8")
+data = loader.load()
+print(data)
+```
+
+```plain
+[Document(metadata={'source': '../../resource/content.html', 'title': '风景展示'}, page_content='\n\n\n\n风景展示\n\n\n\n风景展示\n\n黄山\n黄山位于中国安徽省南部，是中国著名的风景名胜区，以奇松、怪石、云海和温泉“四绝”闻名。\n\n\n\n大峡谷\n大峡谷位于美国亚利桑那州，是世界上最著名的自然景观之一，以其壮观的地质奇观和深邃的峡谷闻名。\n\n\n\n')]
+```
+
+---
+
+
+
+### 如何加载 PDF文件
+[<font style="color:rgb(28, 30, 33);">便携式文档格式（PDF）</font>](https://zh.wikipedia.org/wiki/PDF)<font style="color:rgb(28, 30, 33);">是由Adobe于1992年开发的一种文件格式，标准化为ISO 32000。它以一种与应用软件、硬件和操作系统无关的方式呈现文档，包括文本格式和图像。</font>
+
+<font style="color:rgb(28, 30, 33);">本指南介绍了如何将PDF文档加载到我们在下游使用的LangChain</font><font style="color:rgb(28, 30, 33);"> </font>[<font style="color:rgb(28, 30, 33);">Document</font>](https://api.python.langchain.com/en/latest/documents/langchain_core.documents.base.Document.html#langchain_core.documents.base.Document)<font style="color:rgb(28, 30, 33);">格式中。</font>
+
+<font style="color:rgb(28, 30, 33);">LangChain集成了许多PDF解析器。有些解析器简单且相对低级，而其他解析器支持OCR和图像处理，或进行高级文档布局分析。选择合适的解析器将取决于您的应用程序。下面我们列举了一些可能的选择。</font>
+
+#### 使用PyPDF
+<font style="color:rgb(28, 30, 33);">这里我们使用</font>`<font style="color:rgb(28, 30, 33);">pypdf</font>`<font style="color:rgb(28, 30, 33);">将PDF加载为文档数组，其中每个文档包含页面内容和带有</font>`<font style="color:rgb(28, 30, 33);">page</font>`<font style="color:rgb(28, 30, 33);">编号的元数据。</font>
+
+```python
+%pip install pypdf
+```
+
+```python
+#示例：pdf_loader.py
+from langchain_community.document_loaders import PyPDFLoader
+file_path = ("../../resource/pytorch.pdf")
+loader = PyPDFLoader(file_path)
+pages = loader.load_and_split()
+print(pages[0])
+```
+
+```plain
+page_content='PyTorch: An Imperative Style, High-Performance
+Deep Learning Library
+Adam Paszke
+University of Warsaw
+adam.paszke@gmail.comSam Gross
+Facebook AI Research
+sgross@fb.comFrancisco Massa
+Facebook AI Research
+fmassa@fb.com
+Adam Lerer
+Facebook AI Research
+alerer@fb.comJames Bradbury
+Google
+jekbradbury@gmail.comGregory Chanan
+Facebook AI Research
+gchanan@fb.com
+Trevor Killeen
+Self Employed
+killeent@cs.washington.eduZeming Lin
+Facebook AI Research
+zlin@fb.comNatalia Gimelshein
+NVIDIA
+ngimelshein@nvidia.com
+Luca Antiga
+Orobix
+luca.antiga@orobix.comAlban Desmaison
+Oxford University
+alban@robots.ox.ac.ukAndreas Köpf
+Xamla
+andreas.koepf@xamla.com
+Edward Yang
+Facebook AI Research
+ezyang@fb.comZach DeVito
+Facebook AI Research
+zdevito@cs.stanford.eduMartin Raison
+Nabla
+martinraison@gmail.com
+Alykhan Tejani
+Twitter
+atejani@twitter.comSasank Chilamkurthy
+Qure.ai
+sasankchilamkurthy@gmail.comBenoit Steiner
+Facebook AI Research
+benoitsteiner@fb.com
+Lu Fang
+Facebook
+lufang@fb.comJunjie Bai
+Facebook
+jbai@fb.comSoumith Chintala
+Facebook AI Research
+soumith@gmail.com
+Abstract
+Deep learning frameworks have often focused on either usability or speed, but
+not both. PyTorch is a machine learning library that shows that these two goals
+are in fact compatible: it provides an imperative and Pythonic programming style
+that supports code as a model, makes debugging easy and is consistent with other
+popular scientiﬁc computing libraries, while remaining efﬁcient and supporting
+hardware accelerators such as GPUs.
+In this paper, we detail the principles that drove the implementation of PyTorch
+and how they are reﬂected in its architecture. We emphasize that every aspect of
+PyTorch is a regular Python program under the full control of its user. We also
+explain how the careful and pragmatic implementation of the key components of
+its runtime enables them to work together to achieve compelling performance.
+We demonstrate the efﬁciency of individual subsystems, as well as the overall
+speed of PyTorch on several common benchmarks.
+33rd Conference on Neural Information Processing Systems (NeurIPS 2019), Vancouver, Canada.' metadata={'source': '../../resource/pytorch.pdf', 'page': 0}
+```
+
+<font style="color:rgb(28, 30, 33);">这种方法的优点是可以通过页码检索文档。</font>
+
+##### 对PDF进行向量搜索
+<font style="color:rgb(28, 30, 33);">一旦我们将PDF加载到LangChain的</font>`<font style="color:rgb(28, 30, 33);">Document</font>`<font style="color:rgb(28, 30, 33);">对象中，我们可以像通常一样对它们进行索引（例如，RAG应用程序）。</font>
+
+```python
+#示例：pdf_search.py
+from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
+faiss_index = FAISS.from_documents(pages, OpenAIEmbeddings())
+docs = faiss_index.similarity_search("What is LayoutParser?", k=2)
+for doc in docs:
+    print(str(doc.metadata["page"]) + ":", doc.page_content[:300])
+```
+
+```plain
+0: PyTorch: An Imperative Style, High-Performance
+Deep Learning Library
+Adam Paszke
+University of Warsaw
+adam.paszke@gmail.comSam Gross
+Facebook AI Research
+sgross@fb.comFrancisco Massa
+Facebook AI Research
+fmassa@fb.com
+Adam Lerer
+Facebook AI Research
+alerer@fb.comJames Bradbury
+Google
+jekbradbury@gma
+1: 1 Introduction
+With the increased interest in deep learning in recent years, there has been an explosion of machine
+learning tools. Many popular frameworks such as Caffe [ 1], CNTK [ 2], TensorFlow [ 3], and
+Theano [ 4], construct a static dataﬂow graph that represents the computation and which can 
+
+```
+
+
+
+从图像中提取文本一些 PDF 包含文本图像，例如扫描文档或图表。使用 `rapidocr-onnxruntime` 软件包，我们也可以将图像提取为文本：
+
+```python
+#示例：pdf_image_text.py
+#pip install rapidocr-onnxruntime
+file_path = ("../../resource/pytorch.pdf")
+loader = PyPDFLoader(file_path, extract_images=True)
+pages = loader.load()
+#识别第9页图片文字
+print(pages[8].page_content)
+```
+
+```plain
+6.4 Adoption
+The validity of design decisions and their impact on ease-of-use is hard to measure. As a proxy,
+we tried to quantify how well the machine learning community received PyTorch by counting how
+often various machine learning tools (including Caffe, Chainer, CNTK, Keras, MXNet, PyTorch,
+TensorFlow, and Theano) are mentioned on arXiv e-Prints since the initial release of PyTorch in
+January 2017. In Figure 3 we report the monthly number of mentions of the word "PyTorch" as a
+percentage of all mentions among these deep learning frameworks. We counted tools mentioned
+multiple times in a given paper only once, and made the search case insensitive to account for various
+spellings.
+Figure 3: Among arXiv papers each month that mention common deep learning frameworks, percentage of
+them that mention PyTorch.
+7 Conclusion and future work
+PyTorch has become a popular tool in the deep learning research community by combining a focus
+on usability with careful performance considerations. In addition to continuing to support the latest
+trends and advances in deep learning, in the future we plan to continue to improve the speed and
+scalability of PyTorch. Most notably, we are working on the PyTorch JIT: a suite of tools that
+allow PyTorch programs to be executed outside of the Python interpreter where they can be further
+optimized. We also intend to improve support for distributed computation by providing efﬁcient
+primitives for data parallelism as well as a Pythonic library for model parallelism based around
+remote procedure calls.
+8 Acknowledgements
+We are grateful to the PyTorch community for their feedback and contributions that greatly inﬂuenced
+the design and implementation of PyTorch. We thank all the PyTorch core team members, contributors
+and package maintainers including Ailing Zhang, Alex Suhan, Alfredo Mendoza, Alican Bozkurt,
+Andrew Tulloch, Ansha Yu, Anthony Shoumikhin, Bram Wasti, Brian Vaughan, Christian Puhrsch,
+David Reiss, David Riazati, Davide Libenzi, Dmytro Dzhulgakov, Dwaraj Rajagopal, Edward Yang,
+Elias Ellison, Fritz Obermeyer, George Zhang, Hao Lu, Hong Xu, Hung Duong, Igor Fedan, Ilia
+Cherniavskii, Iurii Zdebskyi, Ivan Kobzarev, James Reed, Jeff Smith, Jerry Chen, Jerry Zhang, Jiakai
+Liu, Johannes M. Dieterich, Karl Ostmo, Lin Qiao, Martin Yuan, Michael Suo, Mike Ruberry, Mikhail
+Zolothukhin, Mingzhe Li, Neeraj Pradhan, Nick Korovaiko, Owen Anderson, Pavel Belevich, Peter
+Johnson, Pritam Damania, Raghuraman Krishnamoorthi, Richard Zou, Roy Li, Rui Zhu, Sebastian
+Messmer, Shen Li, Simon Wang, Supriya Rao, Tao Xu, Thomas Viehmann, Vincent Quenneville-
+Belair, Vishwak Srinivasan, Vitaly Fedyunin, Wanchao Liang, Wei Yang, Will Feng, Xiaomeng Yang,
+Xiaoqiang Zheng, Xintao Chen, Yangqing Jia, Yanli Zhao, Yinghai Lu and Zafar Takhirov.
+References
+[1]Yangqing Jia, Evan Shelhamer, Jeff Donahue, Sergey Karayev, Jonathan Long, Ross Girshick,
+Sergio Guadarrama, and Trevor Darrell. Caffe: Convolutional architecture for fast feature
+embedding. arXiv preprint arXiv:1408.5093 , 2014.
+[2]Frank Seide and Amit Agarwal. Cntk: Microsoft’s open-source deep-learning toolkit. In
+Proceedings of the 22Nd ACM SIGKDD International Conference on Knowledge Discovery
+and Data Mining , KDD ’16, pages 2135–2135, New York, NY , USA, 2016. ACM.
+950%
+40%
+30%
+20%
+10%
+0%
+Jul2017
+Jan2018
+Jul2018
+Jan2019
+```
+
+
+
+## Text splitters(文本分割器)
+### 如何递归分割文本
+<font style="color:rgb(28, 30, 33);">递归分割(recursively)，这个文本分割器是用于通用文本的推荐工具。它接受一个字符列表作为参数。它会按顺序尝试在这些字符上进行分割，直到块足够小。默认的字符列表是 </font>`<font style="color:rgb(28, 30, 33);">["\n\n", "\n", " ", ""]</font>`<font style="color:rgb(28, 30, 33);">。这样做的效果是尽可能保持所有段落（然后是句子，再然后是单词）在一起，因为这些通常看起来是语义上相关的文本块。</font>
+
+1. <font style="color:rgb(28, 30, 33);">文本如何分割：根据字符列表。</font>
+2. <font style="color:rgb(28, 30, 33);">块大小如何衡量：根据字符数量。</font>
+
+<font style="color:rgb(28, 30, 33);">下面我们展示一个使用示例。</font>
+
+<font style="color:rgb(28, 30, 33);">要直接获取字符串内容，请使用</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">.split_text</font>`<font style="color:rgb(28, 30, 33);">。</font>
+
+<font style="color:rgb(28, 30, 33);">要创建 LangChain</font><font style="color:rgb(28, 30, 33);"> </font>[<font style="color:rgb(28, 30, 33);">Document</font>](https://api.python.langchain.com/en/latest/documents/langchain_core.documents.base.Document.html)<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">对象（例如，用于下游任务），请使用</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">.create_documents</font>`<font style="color:rgb(28, 30, 33);">。</font>
+
+```python
+%pip install -qU langchain-text-splitters
+```
+
+```python
+#示例：recursively_split.py
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# 加载示例文档
+with open("../../resource/knowledge.txt", encoding="utf-8") as f:
+    state_of_the_union = f.read()
+text_splitter = RecursiveCharacterTextSplitter(
+    # 设置一个非常小的块大小，只是为了展示。
+    chunk_size=100,
+    chunk_overlap=20,
+    length_function=len,
+    is_separator_regex=False,
+)
+texts = text_splitter.create_documents([state_of_the_union])
+print(texts[0])
+print(texts[1])
+```
+
+```plain
+page_content='﻿I am honored to be with you today at your commencement from one of the finest universities in the'
+page_content='universities in the world. I never graduated from college. Truth be told, this is the closest I've'
+```
+
+```python
+text_splitter.split_text(knowledge)[:2]
+```
+
+```python
+['\ufeffI am honored to be with you today at your commencement from one of the finest universities in the', "universities in the world. I never graduated from college. Truth be told, this is the closest I've"]
+```
+
+<font style="color:rgb(28, 30, 33);">让我们来看看上述</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">RecursiveCharacterTextSplitter</font>`<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">的参数设置：</font>
+
++ `<font style="color:rgb(28, 30, 33);">chunk_size</font>`<font style="color:rgb(28, 30, 33);">：块的最大大小，大小由</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">length_function</font>`<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">决定。</font>
++ `<font style="color:rgb(28, 30, 33);">chunk_overlap</font>`<font style="color:rgb(28, 30, 33);">：块之间的目标重叠。重叠的块有助于在上下文分割时减少信息丢失。</font>
++ `<font style="color:rgb(28, 30, 33);">length_function</font>`<font style="color:rgb(28, 30, 33);">：确定块大小的函数。</font>
++ `<font style="color:rgb(28, 30, 33);">is_separator_regex</font>`<font style="color:rgb(28, 30, 33);">：分隔符列表（默认为</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">["\n\n", "\n", " ", ""]</font>`<font style="color:rgb(28, 30, 33);">）是否应被解释为正则表达式。</font>
+
+#### 从没有词边界的语言中分割文本
+<font style="color:rgb(28, 30, 33);">一些书写系统没有</font>[<font style="color:rgb(28, 30, 33);">词边界</font>](https://en.wikipedia.org/wiki/Category:Writing_systems_without_word_boundaries)<font style="color:rgb(28, 30, 33);">，例如中文、日文和泰文。使用默认分隔符列表</font><font style="color:rgb(28, 30, 33);"> </font>`<font style="color:rgb(28, 30, 33);">["\n\n", "\n", " ", ""]</font>`<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">分割文本可能会导致单词被分割在不同块之间。为了保持单词在一起，您可以覆盖分隔符列表，包括额外的标点符号：</font>
+
++ <font style="color:rgb(28, 30, 33);">添加 ASCII 句号 "</font>`<font style="color:rgb(28, 30, 33);">.</font>`<font style="color:rgb(28, 30, 33);">"，</font>[<font style="color:rgb(28, 30, 33);">Unicode 全角</font>](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block))<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">句号 "</font>`<font style="color:rgb(28, 30, 33);">．</font>`<font style="color:rgb(28, 30, 33);">"（用于中文文本），以及</font>[<font style="color:rgb(28, 30, 33);">表意句号</font>](https://en.wikipedia.org/wiki/CJK_Symbols_and_Punctuation)<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">"</font>`<font style="color:rgb(28, 30, 33);">。</font>`<font style="color:rgb(28, 30, 33);">"（用于日文和中文）</font>
++ <font style="color:rgb(28, 30, 33);">添加</font>[<font style="color:rgb(28, 30, 33);">零宽空格</font>](https://en.wikipedia.org/wiki/Zero-width_space)<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">用于泰文、缅甸文、高棉文和日文。</font>
++ <font style="color:rgb(28, 30, 33);">添加 ASCII 逗号 "</font>`<font style="color:rgb(28, 30, 33);">,</font>`<font style="color:rgb(28, 30, 33);">"，Unicode 全角逗号 "</font>`<font style="color:rgb(28, 30, 33);">，</font>`<font style="color:rgb(28, 30, 33);">"，以及 Unicode 表意逗号 "</font>`<font style="color:rgb(28, 30, 33);">、</font>`<font style="color:rgb(28, 30, 33);">"</font>
+
+```python
+#示例：recursively_separator.py
+text_splitter = RecursiveCharacterTextSplitter(
+    separators=[
+        "\n\n",
+        "\n",
+        " ",
+        ".",
+        ",",
+        "\u200b",  # 零宽空格
+        "\uff0c",  # 全角逗号
+        "\u3001",  # 表意逗号
+        "\uff0e",  # 全角句号
+        "\u3002",  # 表意句号
+        "",
+    ],
+    # 已有的参数
+)
+```
+
+---
+
+
+
+### 按照语义块分割文本
+<font style="color:rgb(28, 30, 33);">下面介绍如何根据语义相似性拆分文本块(semantic chunks)。如果嵌入足够远，文本块将被拆分。</font>
+
+<font style="color:rgb(28, 30, 33);">在高层次上，这将文本拆分成句子，然后分组为每组3个句子，最后合并在嵌入空间中相似的句子。</font>
+
+#### 安装依赖项
+```python
+#pip install --quiet langchain_experimental langchain_openai
+```
+
+#### 载入示例数据
+```python
+#示例：semantic_split.py
+# 这是一个长文档，我们可以将其拆分。
+with open("../../resource/knowledge.txt", encoding="utf-8") as f:
+    knowledge = f.read()
+```
+
+#### 创建文本拆分器
+<font style="color:rgb(28, 30, 33);">要实例化一个</font>[<font style="color:rgb(28, 30, 33);">SemanticChunker</font>](https://api.python.langchain.com/en/latest/text_splitter/langchain_experimental.text_splitter.SemanticChunker.html)<font style="color:rgb(28, 30, 33);">，我们必须指定一个嵌入模型。下面我们将使用</font>[<font style="color:rgb(28, 30, 33);">OpenAIEmbeddings</font>](https://api.python.langchain.com/en/latest/embeddings/langchain_community.embeddings.openai.OpenAIEmbeddings.html)<font style="color:rgb(28, 30, 33);">。</font>
+
+```python
+from langchain_experimental.text_splitter import SemanticChunker
+from langchain_openai.embeddings import OpenAIEmbeddings
+text_splitter = SemanticChunker(OpenAIEmbeddings())
+```
+
+#### 拆分文本
+<font style="color:rgb(28, 30, 33);">我们按照通常的方式拆分文本，例如，通过调用</font>`<font style="color:rgb(28, 30, 33);">.create_documents</font>`<font style="color:rgb(28, 30, 33);">来创建 LangChain</font><font style="color:rgb(28, 30, 33);"> </font>[<font style="color:rgb(28, 30, 33);">Document</font>](https://api.python.langchain.com/en/latest/documents/langchain_core.documents.base.Document.html)<font style="color:rgb(28, 30, 33);"> </font><font style="color:rgb(28, 30, 33);">对象：</font>
+
+```python
+docs = text_splitter.create_documents([knowledge])
+print(docs[0].page_content)
+```
+
+```plain
+I am honored to be with you today at your commencement from one of the finest universities in the world. I never graduated from college. Truth be told, this is the closest I've ever gotten to a college graduation. Today I want to tell you three stories from my life. That's it. No big deal.
+```
+
+#### 断点
+<font style="color:rgb(28, 30, 33);">这个拆分器的工作原理是确定何时“断开”句子。这是通过查找任意两个句子之间的嵌入差异来完成的。当该差异超过某个阈值时，它们就会被拆分。</font>
+
+<font style="color:rgb(28, 30, 33);">有几种方法可以确定该阈值，这由</font>`<font style="color:rgb(28, 30, 33);">breakpoint_threshold_type</font>`<font style="color:rgb(28, 30, 33);">关键字参数控制。</font>
+
+##### 百分位数
+<font style="color:rgb(28, 30, 33);">拆分的默认方式是基于百分位数。在此方法中，计算所有句子之间的差异，然后任何大于X百分位数的差异都会被拆分。</font>
+
+```python
+#示例：semantic_split_percentile.py
+text_splitter = SemanticChunker(
+    OpenAIEmbeddings(), breakpoint_threshold_type="percentile", breakpoint_threshold_amount=50
+)
+```
+
+```python
+docs = text_splitter.create_documents([knowledge])
+print(docs[0].page_content)
+```
+
+```plain
+I am honored to be with you today at your commencement from one of the finest universities in the world. I never graduated from college.
+```
+
+```python
+print(len(docs))
+```
+
+```plain
+71
+```
+
+# <font style="color:#000000;">Loader, Splitter, Embedding, Vector Store, Retrievers 的综合应用</font>
+## <font style="color:rgb(51, 51, 51);">使用 Streamlit 实现一个支持记忆的 RAG 问答 APP</font>
+### <font style="color:rgb(51, 51, 51);">实现流程</font>
+<font style="color:rgb(51, 51, 51);">一个 RAG 程序的 APP 主要有以下流程：</font>
+
+1. <font style="color:rgb(51, 51, 51);">用户在 RAG 客户端上传一个txt文件</font>
+2. <font style="color:rgb(51, 51, 51);">服务器端接收客户端文件，存储在服务端</font>
+3. <font style="color:rgb(51, 51, 51);">服务器端程序对文件进行读取</font>
+4. <font style="color:rgb(51, 51, 51);">对文件内容进行拆分，防止一次性塞给 Embedding 模型超 token 限制</font>
+5. <font style="color:rgb(51, 51, 51);">把 Embedding 后的内容存储在向量数据库，生成检索器</font>
+6. <font style="color:rgb(51, 51, 51);">程序准备就绪，允许用户进行提问</font>
+7. <font style="color:rgb(51, 51, 51);">用户提出问题，大模型调用检索器检索文档，把相关片段找出来后，组织后，回复用户。</font>
+
+![](https://cdn.nlark.com/yuque/0/2024/png/2424104/1723195691886-f74e18ee-ffb5-4395-92dc-1fb569317281.png)
+
+### <font style="color:rgb(51, 51, 51);">引入记忆</font>
+<font style="color:rgb(51, 51, 51);">以上流程实现起来没有太大难度，但是如果你想在这个基础上实现模型记忆功能，就会比较困难了。梳理下为什么引入记忆会存在困难。我们把引入模型记忆功能之后的使用场景演绎下：</font>
+
+<font style="color:rgb(51, 51, 51);">假如我们上传了一份最新的新闻内容 txt 文件，如下：</font>
+
+```plain
+2024 世界人工智能大会暨人工智能全球治理高级别会议（简称“WAIC 2024”）将于 7 月4日-6日在上海世博中心、世博展览馆举行。
+同时外交部消息称，重要领导人将于7月4日出席开幕式，并发表主旨演讲。
+大会围绕“以共商促共享 以善治促善智（Governing AI for Good and for All）”主题，
+聚焦大模型、算力、机器人、自动驾驶等重点领域，首发一批创新产品。
+目前，已有500余家企业确认参展，市外企业和国际企业占比超50%，展品数量已超1500项，参展企业数 、亮点展品数和首发新品数均创历史最高，
+进一步释放大会对人工智能产业的“磁场效应”。
+市场普遍认为，AI产业链有望迎来新突破，行业配置价值凸显.
+```
+
+<font style="color:rgb(51, 51, 51);">如下是针对这份文档的提问：</font>
+
+```python
+用户：2024 世界人工智能大会那一天开始，地点在哪?
+大模型：2024 世界人工智能大会暨人工智能全球治理高级别会议将于7月4日至6日在上海世博中心、世博展览馆举行。
+用户：大会主题是什么?
+大模型：大会主题是"以共商促共享 以善治促善智（Governing AI for Good and for All）"。
+```
+
+<font style="color:rgb(51, 51, 51);">用户的第二次提问是针对大模型的回复上下文场景下的，所以大模型第二次提问，需要根据整个对话内容重新理解提问，并且改写用户的提问，再通过检索器进行检索后，最终回答用户的第二次提问。</font>
+
+<font style="color:rgb(51, 51, 51);">所以引入记忆带来的额外问题的核心就是，如果需要 RAG 程序要支持记忆，就需要额外加入模型理解对话上下文后改写问题，再次进行检索并回答的流程。</font>
+
+<font style="color:rgb(51, 51, 51);">整个流程需要改成如下：</font>
+
+![](https://cdn.nlark.com/yuque/0/2024/png/2424104/1723195716431-366851c4-4aef-4e23-bc6d-6c1c8cff8719.png)
+
+### <font style="color:rgb(51, 51, 51);">代码实现</font>
+<font style="color:rgb(51, 51, 51);">使用 Streamlit 实现文件上传，我这里只实现了 txt 文件上传，其实这里可以在 </font>[<font style="color:rgb(51, 51, 51);">type</font>](https://so.csdn.net/so/search?q=type&spm=1001.2101.3001.7020)<font style="color:rgb(51, 51, 51);"> 参数里面设置多个文件类型，在后面的检索器方法里面针对每个类型进行处理即可。</font>
+
+#### <font style="color:rgb(51, 51, 51);">实现文件上传</font>
+```python
+#示例：txt_search.py
+import streamlit as st
+
+# 上传txt文件，允许上传多个文件
+uploaded_files = st.sidebar.file_uploader(
+    label="上传txt文件", type=["txt"], accept_multiple_files=True
+)
+if not uploaded_files:
+    st.info("请先上传按TXT文档。")
+    st.stop()
+```
+
+<font style="color:rgb(51, 51, 51);">stremlit run 一下，看下效果</font>
+
+![](https://cdn.nlark.com/yuque/0/2024/png/2424104/1723196872222-44997748-81d7-470f-a200-08e72ac0bdfb.png)
+
+#### <font style="color:rgb(51, 51, 51);">实现检索器</font>
+<font style="color:rgb(51, 51, 51);">注意 chunk_size 最大设置数值取决于 Embedding 模型允许单词的最大字符数限制。</font>
+
+```python
+import tempfile
+import os
+from langchain.document_loaders import TextLoader
+from langchain_community.embeddings import QianfanEmbeddingsEndpoint
+from langchain_chroma import Chroma
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# 实现检索器
+@st.cache_resource(ttl="1h")
+def configure_retriever(uploaded_files):
+    # 读取上传的文档，并写入一个临时目录
+    docs = []
+    temp_dir = tempfile.TemporaryDirectory(dir=r"D:\tmp")
+    for file in uploaded_files:
+        temp_filepath = os.path.join(temp_dir.name, file.name)
+        with open(temp_filepath, "wb") as f:
+            f.write(file.getvalue())
+        loader = TextLoader(temp_filepath, encoding="utf-8")
+        docs.extend(loader.load())
+
+    # 进行文档分割
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=30)
+    splits = text_splitter.split_documents(docs)
+
+    # 这里使用了OpenAI向量模型
+    embeddings = OpenAIEmbeddings()
+    vectordb = Chroma.from_documents(splits, embeddings)
+
+    retriever = vectordb.as_retriever()
+
+    return retriever
+
+
+retriever = configure_retriever(uploaded_files)
+```
+
+#### <font style="color:rgb(51, 51, 51);">创建检索工具</font>
+<font style="color:rgb(51, 51, 51);">langchain 提供了 create_retriever_tool 工具，可以直接用。</font>
+
+```python
+# 创建检索工具
+from langchain.tools.retriever import create_retriever_tool
+
+tool = create_retriever_tool(
+    retriever,
+    "文档检索",
+    "用于检索用户提出的问题，并基于检索到的文档内容进行回复.",
+)
+tools = [tool]
+```
+
+#### <font style="color:rgb(51, 51, 51);">创建 React Agent</font>
+```python
+instructions = """您是一个设计用于查询文档来回答问题的代理。
+您可以使用文档检索工具，并基于检索内容来回答问题
+您可能不查询文档就知道答案，但是您仍然应该查询文档来获得答案。
+如果您从文档中找不到任何信息用于回答问题，则只需返回“抱歉，这个问题我还不知道。”作为答案。
+"""
+
+base_prompt_template = """
+{instructions}
+
+TOOLS:
+------
+
+You have access to the following tools:
+
+{tools}
+
+To use a tool, please use the following format:
+
+•```
+Thought: Do I need to use a tool? Yes
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+•```
+
+When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
+
+•```
+Thought: Do I need to use a tool? No
+Final Answer: [your response here]
+•```
+
+Begin!
+
+Previous conversation history:
+{chat_history}
+
+New input: {input}
+{agent_scratchpad}"""
+
+base_prompt = PromptTemplate.from_template(base_prompt_template)
+
+prompt = base_prompt.partial(instructions=instructions)
+
+# 创建llm
+llm = ChatOpenAI()
+
+# 创建react Agent
+agent = create_react_agent(llm, tools, prompt)
+
+agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=False)
+```
+
+#### <font style="color:rgb(51, 51, 51);">实现 Agent 回复</font>
+<font style="color:rgb(51, 51, 51);">获取用户输入，并回复用户，这里使用 StreamlitCallbackHandler 实现了 React 推理回调，可以让模型的推理过程可见。</font>
+
+```python
+# 创建聊天输入框
+user_query = st.chat_input(placeholder="请开始提问吧!")
+
+if user_query:
+    st.session_state.messages.append({"role": "user", "content": user_query})
+    st.chat_message("user").write(user_query)
+
+    with st.chat_message("assistant"):
+        st_cb = StreamlitCallbackHandler(st.container())
+        config = {"callbacks": [st_cb]}
+        response = agent_executor.invoke({"input": user_query}, config=config)
+        st.session_state.messages.append({"role": "assistant", "content": response["output"]})
+        st.write(response["output"])
+```
+
+<font style="color:rgb(51, 51, 51);">‍</font>
+
+#### <font style="color:rgb(51, 51, 51);">完整代码</font>
+```python
+#示例：txt_search.py
+#pip install streamlit==1.37.0
+import streamlit as st
+import tempfile
+import os
+from langchain.memory import ConversationBufferMemory
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain_community.document_loaders import TextLoader
+from langchain_openai import OpenAIEmbeddings
+from langchain_chroma import Chroma
+from langchain_core.prompts import PromptTemplate
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain.agents import create_react_agent, AgentExecutor
+from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
+from langchain_openai import ChatOpenAI
+
+# 设置Streamlit应用的页面标题和布局
+st.set_page_config(page_title="Rag Agent", layout="wide")
+# 设置应用的标题
+st.title("Rag Agent")
+
+# 上传txt文件，允许上传多个文件
+uploaded_files = st.sidebar.file_uploader(
+    label="上传txt文件", type=["txt"], accept_multiple_files=True
+)
+# 如果没有上传文件，提示用户上传文件并停止运行
+if not uploaded_files:
+    st.info("请先上传按TXT文档。")
+    st.stop()
+
+# 实现检索器
+@st.cache_resource(ttl="1h")
+def configure_retriever(uploaded_files):
+    # 读取上传的文档，并写入一个临时目录
+    docs = []
+    temp_dir = tempfile.TemporaryDirectory(dir=r"D:\tmp")
+    for file in uploaded_files:
+        temp_filepath = os.path.join(temp_dir.name, file.name)
+        with open(temp_filepath, "wb") as f:
+            f.write(file.getvalue())
+        # 使用TextLoader加载文本文件
+        loader = TextLoader(temp_filepath, encoding="utf-8")
+        docs.extend(loader.load())
+
+    # 进行文档分割
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
+    splits = text_splitter.split_documents(docs)
+
+    # 使用OpenAI的向量模型生成文档的向量表示
+    embeddings = OpenAIEmbeddings()
+    vectordb = Chroma.from_documents(splits, embeddings)
+
+    # 创建文档检索器
+    retriever = vectordb.as_retriever()
+
+    return retriever
+
+# 配置检索器
+retriever = configure_retriever(uploaded_files)
+
+# 如果session_state中没有消息记录或用户点击了清空聊天记录按钮，则初始化消息记录
+if "messages" not in st.session_state or st.sidebar.button("清空聊天记录"):
+    st.session_state["messages"] = [{"role": "assistant", "content": "您好，我是聚客AI助手，我可以查询文档"}]
+
+# 加载历史聊天记录
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+
+# 创建检索工具
+from langchain.tools.retriever import create_retriever_tool
+
+# 创建用于文档检索的工具
+tool = create_retriever_tool(
+    retriever,
+    "文档检索",
+    "用于检索用户提出的问题，并基于检索到的文档内容进行回复.",
+)
+tools = [tool]
+
+# 创建聊天消息历史记录
+msgs = StreamlitChatMessageHistory()
+# 创建对话缓冲区内存
+memory = ConversationBufferMemory(
+    chat_memory=msgs, return_messages=True, memory_key="chat_history", output_key="output"
+)
+
+# 指令模板
+instructions = """您是一个设计用于查询文档来回答问题的代理。
+您可以使用文档检索工具，并基于检索内容来回答问题
+您可能不查询文档就知道答案，但是您仍然应该查询文档来获得答案。
+如果您从文档中找不到任何信息用于回答问题，则只需返回“抱歉，这个问题我还不知道。”作为答案。
+"""
+
+# 基础提示模板
+base_prompt_template = """
+{instructions}
+
+TOOLS:
+------
+
+You have access to the following tools:
+
+{tools}
+
+To use a tool, please use the following format:
+
+‍```
+Thought: Do I need to use a tool? Yes
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+‍```
+
+When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
+
+‍```
+Thought: Do I need to use a tool? No
+Final Answer: [your response here]
+‍```
+
+Begin!
+
+Previous conversation history:
+{chat_history}
+
+New input: {input}
+{agent_scratchpad}"""
+
+
+
+# 创建基础提示模板
+base_prompt = PromptTemplate.from_template(base_prompt_template)
+
+# 创建部分填充的提示模板
+prompt = base_prompt.partial(instructions=instructions)
+
+# 创建llm
+llm = ChatOpenAI()
+
+# 创建react Agent
+agent = create_react_agent(llm, tools, prompt)
+
+# 创建Agent执行器
+agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, handle_parsing_errors=True)
+
+# 创建聊天输入框
+user_query = st.chat_input(placeholder="请开始提问吧!")
+
+# 如果有用户输入的查询
+if user_query:
+    # 添加用户消息到session_state
+    st.session_state.messages.append({"role": "user", "content": user_query})
+    # 显示用户消息
+    st.chat_message("user").write(user_query)
+
+    with st.chat_message("assistant"):
+        # 创建Streamlit回调处理器
+        st_cb = StreamlitCallbackHandler(st.container())
+        # agent执行过程日志回调显示在Streamlit Container (如思考、选择工具、执行查询、观察结果等)
+        config = {"callbacks": [st_cb]}
+        # 执行Agent并获取响应
+        response = agent_executor.invoke({"input": user_query}, config=config)
+        # 添加助手消息到session_state
+        st.session_state.messages.append({"role": "assistant", "content": response["output"]})
+        # 显示助手响应
+        st.write(response["output"])
+```
+
+#### <font style="color:rgb(51, 51, 51);">实现效果</font>
+<font style="color:rgb(51, 51, 51);">上传 </font><font style="color:#080808;background-color:#ffffff;">threebody.txt</font><font style="color:rgb(51, 51, 51);"> 内容：</font>
+
+```plain
+在《三体》系列中，执剑人是指掌握着地球与三体文明之间威慑平衡的关键人物。执剑人负责控制一种名为“引力波发射器”的装置，这个装置能够向宇宙广播地球和三体星系的坐标，从而触发宇宙中的黑暗森林法则，导致三体文明和地球文明同时被其他文明消灭。因此，执剑人实际上是维持地球与三体之间脆弱和平的关键。
+第一任执剑人罗辑之所以让三体人感到害怕，是因为他通过与三体文明的接触，逐渐理解了三体文明的弱点和宇宙中的黑暗森林法则。罗辑利用这些知识，采取了一系列策略，使得三体文明无法轻易地消灭人类，甚至可能对人类文明构成威胁。
+罗辑通过与三体文明的对话，发现了三体文明对地球的入侵计划，并利用自己的智慧和策略，成功地将地球文明置于一个相对安全的位置。他通过与三体文明的博弈，展示了人类的智慧和坚韧，使得三体文明意识到人类并非易于征服的对手。
+此外，罗辑还揭示了宇宙中文明的生存状态，即所谓的“黑暗森林法则”，这个法则认为宇宙中的文明如同森林中的猎人，每个文明都在暗中观察其他文明，一旦发现潜在的威胁，就会先发制人。罗辑利用这一法则，使得三体文明不敢轻易对人类采取极端行动，因为他们担心会引来其他文明的注意和攻击。
+因此，罗辑的智慧、策略以及对宇宙法则的理解，使得三体人对他感到害怕，不敢轻视人类的力量和潜力。
+第二任执剑人是程心，程心在小说中接替了罗辑成为执剑人，负责控制引力波发射器，维持地球与三体文明之间的威慑平衡。当执剑人更换时，三体文明认为新执剑人可能不具备前任执剑人的威慑力和决断力，或者无法像前任那样坚定地执行威慑策略。这种不确定性使得三体文明认为发动攻击的风险降低了，因此他们决定抓住机会，发起了对地球的攻击。
+```
+
+<font style="color:rgb(51, 51, 51);">基于上述内容进行提问，效果如下：</font>
+
+```plain
+用户：执剑人是什么角色
+大模型：在《三体》系列中，执剑人是掌握着地球与三体文明之间威慑平衡的关键人物，负责控制引力波发射器，维持地球与三体之间的平衡。第一任执剑人是罗辑，第二任为程心。罗辑通过智慧和策略，成功维护地球文明。
+
+用户：他通过什么办法威胁三体文明
+大模型：罗辑通过与三体文明的对话和博弈，利用自己的智慧、坚韧和对宇宙法则的理解，成功威胁三体文明，使他们不敢轻易对地球采取极端行动。程心则在接替罗辑成为执剑人后，由于三体文明对新执剑人的不确定性，导致他们认为发动攻击的风险降低了，从而决定发起对地球的攻击。
+```
+
+![](https://cdn.nlark.com/yuque/0/2024/png/2424104/1723197424396-a2c990e2-d752-49d6-96cb-6cee3d9a151b.png)
+
